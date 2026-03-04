@@ -1,0 +1,8 @@
+{
+  "/rover/emergency/page": "app/rover/emergency/page.js",
+  "/rover/help/page": "app/rover/help/page.js",
+  "/rover/health/page": "app/rover/health/page.js",
+  "/rover/settings/page": "app/rover/settings/page.js",
+  "/rover/page": "app/rover/page.js",
+  "/rover/entertainment/page": "app/rover/entertainment/page.js"
+}
