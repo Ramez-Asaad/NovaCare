@@ -1,0 +1,27 @@
+{
+  "symptoms": {
+    "headache": "A headache can have many causes including tension, dehydration, or illness. If persistent, consult a doctor.",
+    "chest_pain": "CRITICAL: Chest pain can indicate a heart attack. If severe, call emergency services immediately.",
+    "fever": "Fever is the body's response to infection. Rest, hydrate, and take acetaminophen if needed. Seek help if >103\u00b0F.",
+    "dizziness": "Dizziness may indicate low blood pressure, dehydration, or inner ear issues. Sit down and stay hydrated.",
+    "shortness_of_breath": "Difficulty breathing may be serious. If sudden onset, seek immediate medical attention."
+  },
+  "medications": {
+    "acetaminophen": "Pain reliever and fever reducer. Max 4g/day. Avoid with liver conditions.",
+    "ibuprofen": "Anti-inflammatory. Take with food. Not for those with stomach ulcers or kidney issues.",
+    "aspirin": "Blood thinner and pain reliever. Do not give to children. May interact with other blood thinners."
+  },
+  "emergency_signs": [
+    "Difficulty breathing",
+    "Chest pain or pressure",
+    "Sudden confusion",
+    "Severe bleeding",
+    "Signs of stroke (FAST: Face drooping, Arm weakness, Speech difficulty, Time to call 911)"
+  ],
+  "wellness_tips": {
+    "hydration": "Drink 8 glasses (2L) of water daily. More if active or in hot weather.",
+    "sleep": "Adults need 7-9 hours of quality sleep per night.",
+    "exercise": "150 minutes of moderate exercise weekly is recommended.",
+    "mental_health": "Regular social interaction and stress management are vital."
+  }
+}

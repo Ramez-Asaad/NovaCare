@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Guardian Dashboard - NovaCare{% endblock %}
+
+{% block body %}
+<div class="dashboard-wrapper">
+    <!-- Reuse Sidebar from original but clean it up -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="sidebar-brand">
+                <i class="fas fa-heartbeat"></i> <span>NovaCare Guardian</span>
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active"><i class="fas fa-chart-line"></i> <span>Overview</span></a>
+            <a href="#" class="nav-item"><i class="fas fa-video"></i> <span>Live Feed</span></a>
+            <a href="#" class="nav-item"><i class="fas fa-history"></i> <span>History</span></a>
+            <a href="/logout" class="nav-item mt-auto"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a>
+        </nav>
+    </aside>
+
+    <div class="main-content">
+        <nav class="top-navbar d-flex justify-content-between">
+            <h4 class="fw-bold">Guardian Monitor: {{ user.username }}</h4>
+            <span class="badge bg-success">System Online</span>
+        </nav>
+
+        <div class="container-fluid p-4">
+            <!-- Alert Section -->
+            {% if alerts %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card border-danger shadow-sm">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="mb-0"><i class="fas fa-bell me-2"></i> Recent Alerts</h5>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            {% for alert in alerts %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-bold text-danger">{{ alert.type }}</span>
+                                    <small class="text-muted ms-2">{{ alert.timestamp.strftime('%Y-%m-%d %H:%M')
+                                        }}</small>
+                                    <p class="mb-0 text-muted small">{{ alert.message }}</p>
+                                </div>
+                                <span class="badge bg-secondary">{{ alert.status }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="row g-4">
+                <!-- Live Feed Placeholder -->
+                <div class="col-lg-8">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Live Camera Feed</h5>
+                        </div>
+                        <div class="card-body bg-dark d-flex align-items-center justify-content-center text-white"
+                            style="min-height: 400px;">
+                            <div class="text-center">
+                                <i class="fas fa-video-slash fa-3x mb-3 text-white-50"></i>
+                                <p>Stream Offline</p>
+                                <button class="btn btn-outline-light btn-sm"
+                                    onclick="alert('Requesting secure stream...')">Connect</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vitals Summary -->
+                <div class="col-lg-4">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Primary User Vitals</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="text-muted">Heart Rate</label>
+                                <h3 class="fw-bold text-success">72 BPM</h3>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-muted">SpO2</label>
+                                <h3 class="fw-bold text-primary">98%</h3>
+                            </div>
+                            <div>
+                                <label class="text-muted">Status</label>
+                                <h4 class="fw-bold text-info">Normal</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Remote Controls</h5>
+                        </div>
+                        <div class="card-body d-grid gap-2">
+                            <button class="btn btn-outline-primary"><i class="fas fa-calendar-check me-2"></i>Schedule
+                                Meds</button>
+                            <button class="btn btn-outline-warning"><i class="fas fa-crosshairs me-2"></i>Locate
+                                Rover</button>
+                            <button class="btn btn-outline-danger" disabled><i class="fas fa-gamepad me-2"></i>Remote
+                                Drive (Locked)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

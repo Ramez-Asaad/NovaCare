@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}NovaCare - Home{% endblock %}
+
+{% block body %}
+<!-- Landing Page Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark-custom shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">
+            <i class="fas fa-heartbeat text-primary"></i>
+            <span class="text-light">NovaCare</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero-section-dark">
+    <div class="container">
+        <div class="row align-items-center min-vh-75">
+            <div class="col-lg-6">
+                <div class="badge bg-primary mb-3 px-3 py-2">
+                    <i class="fas fa-shield-alt me-2"></i>IoT Fall Detection System
+                </div>
+                <h1 class="display-4 fw-bold mb-4 text-white">
+                    Intelligent Fall Detection for Enhanced Safety
+                </h1>
+                <p class="lead text-light-gray mb-4">
+                    An Edge AI-powered IoT solution leveraging Computer Vision and pose estimation models 
+                    to provide real-time monitoring for elderly and individuals with physical disabilities. 
+                    Automated fall detection with ≥95% accuracy and instant emergency alerts.
+                </p>
+                <div class="d-flex gap-3 mb-4">
+                    <a href="/dashboard" class="btn btn-primary btn-lg px-4">
+                        <i class="fas fa-chart-line me-2"></i>View Dashboard
+                    </a>
+                    <a href="/login" class="btn btn-outline-light btn-lg px-4">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card shadow-lg border-0 overview-card-dark">
+                    <div class="card-header bg-gradient-dark border-bottom-primary">
+                        <h5 class="mb-0 text-white"><i class="fas fa-layer-group me-2"></i>IoT Architecture Overview</h5>
+                    </div>
+                    <div class="card-body bg-dark-card">
+                        <div class="architecture-layers">
+                            <div class="layer-item">
+                                <div class="layer-number">1</div>
+                                <div class="layer-content">
+                                    <h6 class="text-white mb-1">IoT Devices Layer</h6>
+                                    <p class="text-muted small mb-0">HD RGB Camera for visual sensing</p>
+                                </div>
+                            </div>
+                            <div class="layer-item">
+                                <div class="layer-number">2</div>
+                                <div class="layer-content">
+                                    <h6 class="text-white mb-1">Gateway Layer</h6>
+                                    <p class="text-muted small mb-0">Raspberry Pi 5 with Wi-Fi connectivity</p>
+                                </div>
+                            </div>
+                            <div class="layer-item">
+                                <div class="layer-number">3</div>
+                                <div class="layer-content">
+                                    <h6 class="text-white mb-1">Processing Engine</h6>
+                                    <p class="text-muted small mb-0">MediaPipe/YOLOv8 pose estimation</p>
+                                </div>
+                            </div>
+                            <div class="layer-item">
+                                <div class="layer-number">4</div>
+                                <div class="layer-content">
+                                    <h6 class="text-white mb-1">Application Layer</h6>
+                                    <p class="text-muted small mb-0">Guardian Dashboard & REST APIs</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="border-secondary">
+                        <div class="system-status-dark">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-light"><i class="fas fa-video text-success me-2"></i>Camera</span>
+                                <span class="badge bg-success">Active</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-light"><i class="fas fa-microchip text-success me-2"></i>Raspberry Pi 5</span>
+                                <span class="badge bg-success">Online</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-light"><i class="fas fa-wifi text-success me-2"></i>MQTT Broker</span>
+                                <span class="badge bg-success">Connected</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-darker">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-white">System Objectives</h2>
+            <p class="text-light-gray">Automated monitoring to ensure physical safety through Edge AI</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="feature-card-dark text-center">
+                    <div class="feature-icon-dark bg-primary-soft">
+                        <i class="fas fa-eye fa-2x text-primary"></i>
+                    </div>
+                    <h5 class="mt-3 text-white">Real-Time Monitoring</h5>
+                    <p class="text-light-gray small">Continuously analyze user posture using computer vision technology</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="feature-card-dark text-center">
+                    <div class="feature-icon-dark bg-success-soft">
+                        <i class="fas fa-bullseye fa-2x text-success"></i>
+                    </div>
+                    <h5 class="mt-3 text-white">Accurate Detection</h5>
+                    <p class="text-light-gray small">≥95% accuracy using MediaPipe Pose or YOLOv8-Pose models</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="feature-card-dark text-center">
+                    <div class="feature-icon-dark bg-warning-soft">
+                        <i class="fas fa-bell fa-2x text-warning"></i>
+                    </div>
+                    <h5 class="mt-3 text-white">Automated Response</h5>
+                    <p class="text-light-gray small">Emergency alert sequence without user intervention</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="feature-card-dark text-center">
+                    <div class="feature-icon-dark bg-info-soft">
+                        <i class="fas fa-mobile-alt fa-2x text-info"></i>
+                    </div>
+                    <h5 class="mt-3 text-white">Instant Notification</h5>
+                    <p class="text-light-gray small">Dispatch alerts to caregivers with identity, location, and event details</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="py-5 bg-dark-custom">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-white">Development Team</h2>
+            <p class="text-light-gray">IoT Fall Detection System - NovaCare Module</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4 col-lg-2">
+                <div class="team-card-dark text-center">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-circle fa-3x text-primary"></i>
+                    </div>
+                    <h6 class="mt-3 mb-1 text-white">Basant Awad</h6>
+                    <p class="text-primary small mb-1 fw-bold">22101405</p>
+                    <p class="text-light-gray small">Computer Science</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="team-card-dark text-center">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-circle fa-3x text-success"></i>
+                    </div>
+                    <h6 class="mt-3 mb-1 text-white">Nadira El-Sirafy</h6>
+                    <p class="text-success small mb-1 fw-bold">22101377</p>
+                    <p class="text-light-gray small">Computer Science</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="team-card-dark text-center">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-circle fa-3x text-warning"></i>
+                    </div>
+                    <h6 class="mt-3 mb-1 text-white">Noureen Yasser</h6>
+                    <p class="text-warning small mb-1 fw-bold">22101109</p>
+                    <p class="text-light-gray small">AI Science</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="team-card-dark text-center">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-circle fa-3x text-info"></i>
+                    </div>
+                    <h6 class="mt-3 mb-1 text-white">Muhammad Mustafa</h6>
+                    <p class="text-info small mb-1 fw-bold">22101336</p>
+                    <p class="text-light-gray small">AI Science</p>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-2">
+                <div class="team-card-dark text-center">
+                    <div class="team-avatar">
+                        <i class="fas fa-user-circle fa-3x text-danger"></i>
+                    </div>
+                    <h6 class="mt-3 mb-1 text-white">Ramez Asaad</h6>
+                    <p class="text-danger small mb-1 fw-bold">22100506</p>
+                    <p class="text-light-gray small">AI Science</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-darker text-white py-4 border-top border-secondary">
+    <div class="container text-center">
+        <p class="mb-1">&copy; 2025 NovaCare Fall Detection System. All rights reserved.</p>
+        <p class="text-light-gray small">IoT Project - Edge AI & Computer Vision</p>
+    </div>
+</footer>
+{% endblock %}
