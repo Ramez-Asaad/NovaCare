@@ -1,0 +1,449 @@
+{% extends "base.html" %}
+
+{% block title %}Primary User - NovaBot{% endblock %}
+
+{% block body %}
+<div class="container-fluid p-4">
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <h1 id="greeting">Good Day, User</h1>
+            <p class="lead" id="emotion-status">How can I help you today?</p>
+        </div>
+    </div>
+
+    <!-- Main NovaBot Interface -->
+    <div class="row mb-4 justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg bg-primary text-white border-0">
+                <div class="card-body text-center p-5">
+                    <div id="nova-face" class="mb-3">
+                        <i class="fas fa-robot fa-4x"></i>
+                    </div>
+                    <h2 id="nova-status">I am Listening</h2>
+                    <div class="mt-4">
+                        <button class="btn btn-light btn-lg rounded-pill px-5 py-3 mx-2" onclick="startVoiceInput()">
+                            <i class="fas fa-microphone me-2"></i> Speak
+                        </button>
+                        <button class="btn btn-outline-light btn-lg rounded-pill px-5 py-3 mx-2" onclick="toggleChat()">
+                            <i class="fas fa-keyboard me-2"></i> Type
+                        </button>
+                    </div>
+
+                    <!-- Camera Preview for Emotion Detection -->
+                    <div id="camera-preview" class="mt-4" style="display: none;">
+                        <video id="video" width="320" height="240" autoplay style="border-radius: 10px;"></video>
+                        <canvas id="canvas" style="display: none;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row g-4 justify-content-center mb-4">
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm text-center border-0 clickable-card" onclick="showMedications()">
+                <div class="card-body p-4">
+                    <i class="fas fa-pills fa-3x text-warning mb-3"></i>
+                    <h4>Medication</h4>
+                    <p class="text-muted small" id="next-med">Check schedule</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm text-center border-0 clickable-card" onclick="callGuardian()">
+                <div class="card-body p-4">
+                    <i class="fas fa-phone-alt fa-3x text-success mb-3"></i>
+                    <h4>Call Guardian</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm text-center border-0 clickable-card bg-danger text-white"
+                onclick="triggerEmergency()">
+                <div class="card-body p-4">
+                    <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                    <h4>EMERGENCY</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm text-center border-0 clickable-card" onclick="askMedicalQuestion()">
+                <div class="card-body p-4">
+                    <i class="fas fa-stethoscope fa-3x text-info mb-3"></i>
+                    <h4>Medical Help</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Row -->
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm text-center border-0 clickable-card" onclick="toggleCameraPreview()">
+                <div class="card-body p-4">
+                    <i class="fas fa-smile fa-3x text-purple mb-3" style="color: purple;"></i>
+                    <h4>Emotion Check</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm text-center border-0 clickable-card" onclick="playMusic()">
+                <div class="card-body p-4">
+                    <i class="fas fa-music fa-3x text-info mb-3"></i>
+                    <h4>Music</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm text-center border-0 clickable-card" onclick="showSettings()">
+                <div class="card-body p-4">
+                    <i class="fas fa-cog fa-3x text-secondary mb-3"></i>
+                    <h4>Settings</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 shadow-sm text-center border-0 clickable-card"
+                onclick="window.location.href='/logout'">
+                <div class="card-body p-4">
+                    <i class="fas fa-sign-out-alt fa-3x text-muted mb-3"></i>
+                    <h4>Logout</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chat Widget -->
+<div id="chat-widget" class="chat-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+    <div id="chat-window" class="card shadow-lg" style="width: 380px; display: none; margin-bottom: 20px;">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h6 class="mb-0"><i class="fas fa-robot me-2"></i>NovaBot Chat</h6>
+            <button type="button" class="btn-close btn-close-white" onclick="toggleChat()"></button>
+        </div>
+        <div class="card-body p-0">
+            <div id="chat-messages" class="p-3" style="height: 350px; overflow-y: auto; background: #f8f9fa;">
+                <div class="d-flex flex-column gap-2">
+                    <div class="align-self-start bg-white p-2 rounded shadow-sm" style="max-width: 80%;">
+                        <small class="text-muted d-block mb-1">NovaBot</small>
+                        Hello! I am ready to assist you. How are you feeling?
+                    </div>
+                </div>
+            </div>
+            <div class="p-2 border-top bg-white">
+                <div class="input-group">
+                    <input type="text" id="chat-input" class="form-control border-0" placeholder="Type a message..."
+                        onkeypress="handleEnter(event)">
+                    <button class="btn btn-primary" onclick="sendChat()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="startVoiceInput()">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button id="chat-toggle-btn" class="btn btn-primary rounded-circle shadow-lg p-3" onclick="toggleChat()">
+        <i class="fas fa-comments fa-2x"></i>
+    </button>
+</div>
+
+<!-- Medication Modal -->
+<div class="modal fade" id="medModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title"><i class="fas fa-pills me-2"></i>Medication Schedule</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="med-list">
+                <p>Loading medications...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Variables
+    let videoStream = null;
+    let recognition = null;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function () {
+        updateGreeting();
+        loadMedications();
+        startVitalSimulation();
+
+        // Initialize speech recognition if available
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-US';
+
+            recognition.onresult = function (event) {
+                const text = event.results[0][0].transcript;
+                document.getElementById('chat-input').value = text;
+                sendChat();
+            };
+        }
+    });
+
+    function updateGreeting() {
+        const hour = new Date().getHours();
+        let greeting = 'Good Evening';
+        if (hour < 12) greeting = 'Good Morning';
+        else if (hour < 18) greeting = 'Good Afternoon';
+        document.getElementById('greeting').textContent = `${greeting}, User`;
+    }
+
+    function toggleChat() {
+        const win = document.getElementById('chat-window');
+        win.style.display = win.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function handleEnter(e) {
+        if (e.key === 'Enter') sendChat();
+    }
+
+    async function sendChat() {
+        const input = document.getElementById('chat-input');
+        const text = input.value.trim();
+        if (!text) return;
+
+        addMessage('You', text, true);
+        input.value = '';
+
+        document.getElementById('nova-status').textContent = 'Processing...';
+
+        try {
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+            const data = await res.json();
+
+            addMessage('NovaBot', data.response, false);
+            document.getElementById('nova-status').textContent = 'I am Listening';
+
+            // ========== TEXT-TO-SPEECH (TTS) ==========
+            speakResponse(data.response);
+
+            // Update emotion display
+            if (data.text_emotion) {
+                document.getElementById('emotion-status').textContent =
+                    `Detected mood: ${data.text_emotion.emotion} (${Math.round(data.text_emotion.confidence * 100)}%)`;
+                console.log(`[EMOTION] Detected: ${data.text_emotion.emotion} (${data.text_emotion.confidence})`);
+            }
+
+            // If emergency
+            if (data.is_emergency) {
+                alert('🚨 EMERGENCY ALERT SENT!');
+                speakResponse('Emergency alert has been sent. Help is on the way.');
+            }
+        } catch (err) {
+            addMessage('System', 'Connection error. Please try again.', false);
+            console.error('Chat error:', err);
+            document.getElementById('nova-status').textContent = 'Connection Error';
+        }
+    }
+
+    // ========== TEXT-TO-SPEECH FUNCTION ==========
+    let ttsEnabled = true;
+
+    function speakResponse(text) {
+        if (!ttsEnabled) return;
+        if (!('speechSynthesis' in window)) {
+            console.log('TTS not supported in this browser');
+            return;
+        }
+
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.9;  // Slightly slower for clarity
+        utterance.pitch = 1.0;
+        utterance.volume = 1.0;
+        utterance.lang = 'en-US';
+
+        // Try to find a good voice
+        const voices = window.speechSynthesis.getVoices();
+        const preferredVoice = voices.find(v => v.name.includes('Google') || v.name.includes('Microsoft'));
+        if (preferredVoice) {
+            utterance.voice = preferredVoice;
+        }
+
+        // Update status while speaking
+        utterance.onstart = () => {
+            document.getElementById('nova-status').textContent = 'Speaking...';
+        };
+        utterance.onend = () => {
+            document.getElementById('nova-status').textContent = 'I am Listening';
+        };
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function toggleTTS() {
+        ttsEnabled = !ttsEnabled;
+        alert(ttsEnabled ? 'Voice output enabled' : 'Voice output disabled');
+    }
+
+    function addMessage(sender, text, isUser) {
+        const container = document.getElementById('chat-messages').firstElementChild;
+        const div = document.createElement('div');
+        div.className = `p-2 rounded shadow-sm ${isUser ? 'align-self-end bg-primary text-white' : 'align-self-start bg-white text-dark'}`;
+        div.style.maxWidth = '80%';
+        div.innerHTML = `<small class="${isUser ? 'text-white-50' : 'text-muted'} d-block mb-1">${sender}</small>${text}`;
+        container.appendChild(div);
+        document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+    }
+
+    function startVoiceInput() {
+        if (recognition) {
+            document.getElementById('nova-status').textContent = 'Listening to voice...';
+            recognition.start();
+        } else {
+            alert('Voice recognition not supported in this browser.');
+        }
+    }
+
+    async function triggerEmergency() {
+        if (!confirm('🚨 Are you sure you want to trigger an EMERGENCY alert?')) return;
+
+        try {
+            const res = await fetch('/api/emergency', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: 'Manual Emergency', message: 'Emergency button pressed by user' })
+            });
+            const data = await res.json();
+            alert('🚨 EMERGENCY ALERT SENT! Help is on the way.');
+        } catch (err) {
+            alert('Failed to send alert. Please call for help manually!');
+        }
+    }
+
+    async function loadMedications() {
+        try {
+            const res = await fetch('/api/medication');
+            const meds = await res.json();
+
+            if (meds.length > 0) {
+                document.getElementById('next-med').textContent = `Next: ${meds[0].name} at ${meds[0].schedule_time}`;
+            }
+        } catch (err) {
+            console.error('Failed to load medications');
+        }
+    }
+
+    function showMedications() {
+        const modal = new bootstrap.Modal(document.getElementById('medModal'));
+        modal.show();
+
+        fetch('/api/medication').then(r => r.json()).then(meds => {
+            const container = document.getElementById('med-list');
+            if (meds.length === 0) {
+                container.innerHTML = '<p>No medications scheduled.</p>';
+            } else {
+                container.innerHTML = meds.map(m => `
+                    <div class="card mb-2">
+                        <div class="card-body d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-0">${m.name}</h5>
+                                <small class="text-muted">${m.dosage || ''} - ${m.schedule_time}</small>
+                            </div>
+                            <button class="btn btn-success btn-sm" onclick="markMedTaken(${m.id})">
+                                <i class="fas fa-check"></i> Taken
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        });
+    }
+
+    function markMedTaken(medId) {
+        alert('Medication marked as taken!');
+    }
+
+    function askMedicalQuestion() {
+        const question = prompt('What medical question do you have?');
+        if (question) {
+            document.getElementById('chat-input').value = question;
+            toggleChat();
+            sendChat();
+        }
+    }
+
+    function callGuardian() {
+        alert('Calling Guardian... (Simulated)');
+    }
+
+    function playMusic() {
+        alert('Playing relaxing music... (Simulated)');
+    }
+
+    function showSettings() {
+        alert('Settings panel coming soon.');
+    }
+
+    function toggleCameraPreview() {
+        const preview = document.getElementById('camera-preview');
+        const video = document.getElementById('video');
+
+        if (preview.style.display === 'none') {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    videoStream = stream;
+                    video.srcObject = stream;
+                    preview.style.display = 'block';
+                })
+                .catch(err => alert('Cannot access camera: ' + err.message));
+        } else {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+            }
+            preview.style.display = 'none';
+        }
+    }
+
+    // Simulate sending vitals every 10 seconds
+    function startVitalSimulation() {
+        setInterval(async () => {
+            const hr = Math.floor(60 + Math.random() * 40); // 60-100
+            const spo2 = Math.floor(95 + Math.random() * 5); // 95-100
+
+            try {
+                await fetch('/api/vitals', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ heart_rate: hr, spo2: spo2 })
+                });
+            } catch (err) {
+                // Silent fail for vitals
+            }
+        }, 10000);
+    }
+</script>
+
+<style>
+    .clickable-card {
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .clickable-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .clickable-card:active {
+        transform: scale(0.98);
+    }
+</style>
+{% endblock %}

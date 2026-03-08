@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaBot - Voice AI Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .status-bar {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+            color: #495057;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-bar.listening {
+            background: #d4edda;
+            color: #155724;
+            animation: pulse 1.5s infinite;
+        }
+
+        .status-bar.processing {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-bar.speaking {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .chat-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .message.bot {
+            background: white;
+            color: #333;
+            border: 2px solid #667eea;
+        }
+
+        .message-header {
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+
+        .text-input-section {
+            margin-top: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .settings {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        .settings h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .setting-item label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .api-config {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .api-config input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🤖 NovaBot</h1>
+        <p class="subtitle">Voice-Powered AI Assistant</p>
+
+        <!-- API Configuration -->
+        <div class="api-config">
+            <strong>API Configuration:</strong>
+            <input type="text" id="apiUrl" value="http://localhost:5000" placeholder="API URL">
+            <small style="color: #666; display: block; margin-top: 5px;">
+                Make sure the Flask server is running (python api_server.py)
+            </small>
+        </div>
+
+        <!-- Status Bar -->
+        <div class="status-bar" id="statusBar">Ready</div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="btn-primary" id="startVoiceBtn" onclick="startVoiceInteraction()">
+                🎤 Start Voice
+            </button>
+            <button class="btn-danger" id="stopBtn" onclick="stopInteraction()" disabled>
+                ⏹ Stop
+            </button>
+            <button class="btn-info" id="toggleTTSBtn" onclick="toggleTTS()">
+                🔊 TTS: ON
+            </button>
+            <button class="btn-secondary" onclick="clearChat()">
+                🗑 Clear Chat
+            </button>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container" id="chatContainer">
+            <div class="empty-state">Start a conversation by clicking "Start Voice" or typing a message below</div>
+        </div>
+
+        <!-- Text Input -->
+        <div class="text-input-section">
+            <div class="input-group">
+                <input type="text" id="textInput" placeholder="Type your message here..." 
+                       onkeypress="handleEnter(event)">
+                <button class="btn-success" onclick="sendTextMessage()">Send</button>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="settings">
+            <h3>Settings</h3>
+            <div class="setting-item">
+                <label>API Status:</label>
+                <span id="apiStatus">Not checked</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include required scripts -->
+    <script src="{{ url_for('static', filename='js/STT.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/TTS.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/NovaBotClient.js') }}"></script>
+
+    <script>
+        // Initialize NovaBot Client
+        let novabot = null;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeNovaBot();
+            checkApiHealth();
+        });
+
+        function initializeNovaBot() {
+            const apiUrl = document.getElementById('apiUrl').value;
+            
+            novabot = new NovaBotClient({
+                apiUrl: apiUrl,
+                apiEndpoint: '/api/chat',
+                ttsEnabled: true,
+                ttsRate: 0.9,
+                sttLang: 'en-US'
+            });
+
+            // Setup callbacks
+            novabot.onResponse((userMessage, aiResponse) => {
+                addMessage('You', userMessage, 'user');
+                addMessage('NovaBot', aiResponse, 'bot');
+            });
+
+            novabot.onError((type, error, message) => {
+                console.error('[NovaBot Error]', type, error, message);
+                updateStatus('Error: ' + message, 'error');
+                
+                if (type === 'api') {
+                    alert('API Error: ' + message + '\n\nMake sure the Flask server is running!');
+                }
+            });
+
+            novabot.onStatus((message) => {
+                updateStatus(message);
+            });
+
+            console.log('NovaBot initialized');
+        }
+
+        function startVoiceInteraction() {
+            if (!novabot) {
+                initializeNovaBot();
+            }
+
+            if (novabot.isCurrentlyProcessing()) {
+                alert('Please wait for the current request to complete');
+                return;
+            }
+
+            const success = novabot.startVoiceInteraction();
+            
+            if (success) {
+                document.getElementById('startVoiceBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+                updateStatus('Listening...', 'listening');
+            }
+        }
+
+        function stopInteraction() {
+            if (novabot) {
+                novabot.stopVoiceInteraction();
+            }
+            document.getElementById('startVoiceBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            updateStatus('Stopped', '');
+        }
+
+        function sendTextMessage() {
+            const input = document.getElementById('textInput');
+            const message = input.value.trim();
+            
+            if (!message) {
+                return;
+            }
+
+            if (!novabot) {
+                initializeNovaBot();
+            }
+
+            input.value = '';
+            updateStatus('Processing...', 'processing');
+
+            // Message will be added via onResponse callback to avoid duplication
+            novabot.sendTextMessage(message)
+                .then((response) => {
+                    // Response is already added via callback
+                })
+                .catch((error) => {
+                    console.error('Error sending message:', error);
+                });
+        }
+
+        function handleEnter(event) {
+            if (event.key === 'Enter') {
+                sendTextMessage();
+            }
+        }
+
+        function toggleTTS() {
+            if (!novabot) {
+                initializeNovaBot();
+            }
+
+            const isEnabled = novabot.toggleTTS();
+            const btn = document.getElementById('toggleTTSBtn');
+            btn.textContent = isEnabled ? '🔊 TTS: ON' : '🔇 TTS: OFF';
+            btn.style.background = isEnabled ? '#17a2b8' : '#6c757d';
+        }
+
+        function clearChat() {
+            if (novabot) {
+                novabot.clearHistory();
+            }
+            document.getElementById('chatContainer').innerHTML = 
+                '<div class="empty-state">Chat cleared. Start a new conversation!</div>';
+        }
+
+        function addMessage(sender, text, type) {
+            const container = document.getElementById('chatContainer');
+            
+            // Remove empty state if present
+            const emptyState = container.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.innerHTML = `
+                <div class="message-header">${sender}</div>
+                <div>${text}</div>
+            `;
+            
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function updateStatus(message, type = '') {
+            const statusBar = document.getElementById('statusBar');
+            statusBar.textContent = message;
+            statusBar.className = 'status-bar ' + type;
+        }
+
+        async function checkApiHealth() {
+            const apiUrl = document.getElementById('apiUrl').value;
+            const statusElement = document.getElementById('apiStatus');
+            
+            try {
+                const response = await fetch(`${apiUrl}/health`);
+                if (response.ok) {
+                    statusElement.textContent = '✅ Connected';
+                    statusElement.style.color = '#28a745';
+                } else {
+                    throw new Error('Server responded with error');
+                }
+            } catch (error) {
+                statusElement.textContent = '❌ Not connected';
+                statusElement.style.color = '#dc3545';
+            }
+        }
+
+        // Update API URL when changed
+        document.getElementById('apiUrl').addEventListener('change', function() {
+            if (novabot) {
+                novabot.setApiUrl(this.value);
+                checkApiHealth();
+            }
+        });
+
+        // Auto-update status based on NovaBot state
+        setInterval(() => {
+            if (!novabot) return;
+
+            if (novabot.isCurrentlyListening()) {
+                updateStatus('Listening...', 'listening');
+            } else if (novabot.isCurrentlyProcessing()) {
+                updateStatus('Processing...', 'processing');
+            } else if (novabot.isCurrentlySpeaking()) {
+                updateStatus('Speaking...', 'speaking');
+            } else if (document.getElementById('statusBar').textContent === 'Listening...' ||
+                       document.getElementById('statusBar').textContent === 'Processing...' ||
+                       document.getElementById('statusBar').textContent === 'Speaking...') {
+                updateStatus('Ready', '');
+                document.getElementById('startVoiceBtn').disabled = false;
+                document.getElementById('stopBtn').disabled = true;
+            }
+        }, 500);
+    </script>
+</body>
+</html>

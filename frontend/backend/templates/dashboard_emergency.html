@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Emergency Dispatch - NovaCare{% endblock %}
+
+{% block body %}
+<div class="container-fluid p-0">
+    <div class="bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+        <h4 class="mb-0 text-danger"><i class="fas fa-ambulance me-2"></i>Emergency Dispatch View</h4>
+        <span>Unit: DISPATCH-01</span>
+    </div>
+
+    <div class="container pt-4">
+        {% if alerts %}
+        {% for alert in alerts %}
+        <div class="card border-danger shadow-lg mb-4">
+            <div class="card-header bg-danger text-white d-flex justify-content-between">
+                <h3 class="mb-0">CRITICAL ALERT: {{ alert.type }}</h3>
+                <h3>{{ alert.timestamp.strftime('%H:%M:%S') }}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-user me-2"></i> Subject Information</h5>
+                        <p class="lead"><strong>Name:</strong> Primary User</p>
+                        <p><strong>ID:</strong> #1024</p>
+                        <p><strong>Condition:</strong> Wheelchair User, History of Falls</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-map-marker-alt me-2"></i> Location</h5>
+                        <div class="bg-light p-3 rounded">
+                            <p class="mb-1"><strong>Address:</strong> 123 Care Lane, Apt 4B</p>
+                            <p class="mb-0"><strong>Coordinates:</strong> 30.0444° N, 31.2357° E</p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row mt-4">
+                    <div class="col-12 text-center">
+                        <button class="btn btn-warning btn-lg w-100 py-3" onclick="alert('Dispatching Unit...')">
+                            <i class="fas fa-truck-medical me-2"></i> DISPATCH UNIT
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center bg-light">
+                <small class="text-muted">Automated Alert from NovaCare System</small>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="text-center mt-5 text-muted">
+            <i class="fas fa-check-circle fa-5x mb-3 text-success"></i>
+            <h2>No Active Emergencies</h2>
+            <p>System status: MONITORING</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

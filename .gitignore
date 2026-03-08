@@ -1,0 +1,56 @@
+# ========================================
+# NovaCare Unified Project - .gitignore
+# ========================================
+
+# ---- Python ----
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+*.so
+
+# ---- Node.js ----
+node_modules/
+.next/
+*.tsbuildinfo
+
+# ---- Environment & Secrets ----
+.env
+.env.local
+.env.*.local
+
+# ---- Databases ----
+*.db
+*.sqlite3
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- IDE ----
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ---- Large Model Files ----
+# Model checkpoints — too large for git
+services/asl-model/checkpoints/
+services/asl-model/data/asl_alphabet_train/
+services/asl-model/data/asl_alphabet_test/
+services/asl-model/data/raw/
+services/asl-model/data/processed/
+services/asl-model/data/models/
+
+# ---- Build & Cache ----
+*.log
+npm-debug.log*
+package-lock.json
