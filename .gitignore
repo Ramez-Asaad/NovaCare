@@ -81,3 +81,4 @@ mock_mysql.db
 # ---- Dev SQLite DB ----
 *.db
 *.sqlite3
+novacare-key.pem
