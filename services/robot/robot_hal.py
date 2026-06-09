@@ -45,21 +45,33 @@ _pop_Util = None
 
 try:
     from pop.Pilot import SerBot as _SerBotClass
-    from pop.LiDAR import Rplidar as _RplidarClass
-    from pop import Util as _pop_Util_module
-    _POP_AVAILABLE = True
     _SerBot = _SerBotClass
+    _POP_AVAILABLE = True
+    print("[OK] pop.Pilot.SerBot loaded")
+except ImportError as e:
+    print(f"[WARN] pop.Pilot.SerBot not available: {e}")
+
+try:
+    from pop.LiDAR import Rplidar as _RplidarClass
     _Rplidar = _RplidarClass
+    _POP_AVAILABLE = True
+    print("[OK] pop.LiDAR.Rplidar loaded")
+except ImportError as e:
+    print(f"[WARN] pop.LiDAR.Rplidar not available: {e}")
+
+try:
+    from pop import Util as _pop_Util_module
     _pop_Util = _pop_Util_module
-    print("[OK] pop library loaded - running on SERBot hardware")
-except ImportError:
-    print("[WARN] pop library not available - running in MOCK/DEV mode")
+    print("[OK] pop.Util loaded")
+except ImportError as e:
+    print(f"[WARN] pop.Util not available: {e}")
 
 try:
     from pop import AudioPlay as _AudioPlayClass
     _AudioPlay = _AudioPlayClass
-except ImportError:
-    pass
+    print("[OK] pop.AudioPlay loaded")
+except ImportError as e:
+    print(f"[WARN] pop.AudioPlay not available: {e}")
 
 # Optional imports for TTS/STT
 try:
